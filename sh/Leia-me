@@ -1,0 +1,4 @@
+Rodar o FreshInstall.sh e ele deverá puxar as instalações individuais.
+Ele instala as coisas necessarias como as bibliotecas dos compiladores, unzip, ssh, arruma data e hora e então chama os .sh dos modulos individuais. Deixar separados em modulos para facilitar reuso e manutenção.
+
+
