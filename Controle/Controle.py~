@@ -1,0 +1,67 @@
+import rospy
+from geometry_msgs.msg import Twist
+
+if __name__ == '__main__':
+	global_maxVel = 2;
+	global_minVel = 0;
+	PARADO = 0
+	CIMA = 1
+	BAIXO = 2
+	FRENTE = 3
+	ATRAS = 4
+	DIREITA = 5
+	ESQUERDA = 6
+
+	direction = PARADO
+
+	rospy.init_node('Exemplo_CmdVel_Publish', anonymous=True)
+	rate = rospy.Rate(100)
+
+	while not rospy.is_shutdown():			
+		cmd_vel_publish = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+		vel = Twist()
+
+		if direction == CIMA: 
+			vel.linear.x = 0
+			vel.linear.y = 0
+			vel.linear.z = 1
+		elif direction == BAIXO:
+			vel.linear.x = 0
+			vel.linear.y = 0
+			vel.linear.z = -1
+		elif direction == FRENTE:
+			vel.linear.x = 1
+			vel.linear.y = global_minVel
+			vel.linear.z = global_minVel
+		elif direction == TRAS:
+			vel.linear.x = -1
+			vel.linear.y = global_minVel
+			vel.linear.z = global_minVel
+		elif direction == DIREITA:
+			vel.linear.x = global_minVel
+			vel.linear.y = 1
+			vel.linear.z = global_minVel
+		elif direction == ESQUERDA:
+			vel.linear.x = global_minVel
+			vel.linear.y = -1
+			vel.linear.z = global_minVel
+		elif direction == PARADO:
+			vel.linear.x = global_minVel
+			vel.linear.y = global_minVel
+			vel.linear.z = global_minVel
+		
+				
+		
+		vel.linear.z = 1
+	#		vel.angular.z = 10
+		cmd_vel_publish.publish(vel)
+
+		rate.sleep()
+
+
+	
+
+
+	
+	
+	
