@@ -9,8 +9,8 @@ import os
 def clientFunction():
     print 'clientFunction'
 #     print socket.gethostbyname(socket.gethostname())
-    HOST = '192.168.1.32'               # Endereco IP do Servidor
-    PORT = 4000                         # Porta que o Servidor esta
+    HOST = '192.168.1.31'               # Endereco IP do Servidor
+    PORT = 5000                         # Porta que o Servidor esta
     tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     dest = (HOST, PORT)
     tcp.connect(dest)
@@ -21,7 +21,8 @@ def clientFunction():
         msg = raw_input()
     tcp.close()
     
-    
+clientFunction()
+
 def serverFunction():
     print 'serverFunction'
     HOST = '192.168.1.30'               # Endereco IP do Servidor
