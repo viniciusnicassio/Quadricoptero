@@ -4,8 +4,8 @@
 #iwconfig wlan0
 #ifconfig wlan0
 
-iwconfig
 echo  -e "${cyan} Indique o nome do modulo desejado. ex:wlan1${NC} "
+iwconfig
 read wlan
 sudo ifconfig $wlan up
 sudo iwconfig $wlan power up

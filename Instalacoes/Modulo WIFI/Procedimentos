@@ -1,0 +1,12 @@
+Como instalar o WI-FI EP-N8508 (Driver Ralink 5370)
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+cd linux-firmware
+cp -a rt*.bin /lib/firmware
+sudo reboot
+
+Como configurar
+iwconfig (verificar qual wlan é)
+sudo iwconfig wlanX power up
+sudo iwconfig wlanX essid NOME_DA_REDE
+sudo dhclient wlanX
+
