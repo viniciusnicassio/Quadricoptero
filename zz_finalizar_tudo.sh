@@ -1,3 +1,3 @@
-find -iname limpar.sh -execdir {} \;
-find -iname limpar.sh -exec rm {} \;
+./limpar_tudo.sh
+rm limpar_tudo.sh
 rm zz_finalizar_tudo.sh
