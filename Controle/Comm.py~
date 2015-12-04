@@ -13,7 +13,6 @@ class Comm(Thread):
 	HOST = '192.168.0.102'               	# Endereco IP do Servidor
 	PORT = 5000                         	# Porta que o Servidor esta
 	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	connected = False
 
 	#Variaveis de sensoriamento
 	accelX = 0 			# Eixo x do acelerometro
@@ -46,12 +45,15 @@ class Comm(Thread):
 	potMotoresTotal_old = numpy.matrix([[0],[0],[0],[0]]) 	# Potencia total dos motores
 	offsetMotores_old = numpy.matrix([[0],[0],[0],[0]]) 	# Offset dos motores 	
 	potMotores_old = numpy.matrix([[0],[0],[0],[0]]) 		# Potencia dos motores
- 	
+
 	def initComm(self):
 		dest = (self.HOST, self.PORT)
-		tcp.connect(dest)
+		self.tcp.connect(dest)
 		connected = True
-
+ 	
+	def __init__ (self):
+		self.initComm();
+	
 #--------------------------- Controle interno ---------------------------------#
 	def set_exe(self, auxExe):
 		self.exe = auxExe
@@ -107,18 +109,18 @@ class Comm(Thread):
 		return True
 
 #------------------------------ Main Loop -------------------------------------#
-	while exe==RODANDO:
-		if not connected:
-			initComm()
-		if hasBeenUpdated():
-			paramMsg = "[INICIO]"
-			paramMsg.append("\t\tMotor1: ")
-			paramMsg.append(potMotores[0,0])
-			paramMsg.append("\t\tMotor2: ")
-			paramMsg.append(potMotores[1,0])
-			paramMsg.append("\t\tMotor3: ")
-			paramMsg.append(potMotores[2,0])
-			paramMsg.append("\t\tMotor4: ")
-			paramMsg.append(potMotores[3,0])
-			paramMsg.append("[FIM]")
-			tcp.send(paramMsg)	
+	def run(self):
+		while self.exe == self.RODANDO:
+			if self.hasBeenUpdated():
+				paramMsg = "[INICIO]"
+				paramMsg.append("\t\tMotor1: ")
+				paramMsg.append(self.potMotores[0,0])
+				paramMsg.append("\t\tMotor2: ")
+				paramMsg.append(self.potMotores[1,0])
+				paramMsg.append("\t\tMotor3: ")
+				paramMsg.append(self.potMotores[2,0])
+				paramMsg.append("\t\tMotor4: ")
+				paramMsg.append(self.potMotores[3,0])
+				paramMsg.append("[FIM]")
+				self.tcp.send(paramMsg)
+		self.tcp.close()
