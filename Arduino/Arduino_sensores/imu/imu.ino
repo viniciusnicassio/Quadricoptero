@@ -2,37 +2,58 @@
 #include <L3G.h>
 #include <LSM303.h>
 
-#define DIV_ACC 32768 //Referencia para 1
+//#define DIV_ACC 32768 //Referencia para 1
 
-#define DIV_GIRO 32768 //Relação de 1
+//#define DIV_GIRO 32768 //Relação de 1
 
-#define MEDIA 10 // Valor aquisitado para calulo da media
+#define DIV_ACC 182.044444444 //Referencia para 180
+
+#define DIV_GIRO 182.044444444 //Relação de 180
+
+#define MEDIA 50 // Valor aquisitado para calulo da media
 
 //Funções
     //Acelerometro
     float AccX();
     float AccY();
     float AccZ();
-
-    //Media
-    float mAccX();
-    float mAccY();
-    float mAccZ();
-
+    
     //Giroscopio
     float GiroX();
     float GiroY();
     float GiroZ();
     
     //Media
-    float mGiroX();/*
-    float mGiroY();
-    float mGiroZ();*/
+    void mAccX(float *media,int &i);
+    void mAccY(float *media,int &i);
+    void mAccZ(float *media,int &i);
+    
+    void mGiroX(float *media,int &i);
+    void mGiroY(float *media,int &i);
+    void mGiroZ(float *media,int &i);
+    
+    //Variaveis
+    float mAccx[MEDIA+1];
+    float mAccy[MEDIA+1];
+    float mAccz[MEDIA+1];
+    
+    float mGirox[MEDIA+1];
+    float mGiroy[MEDIA+1];
+    float mGiroz[MEDIA+1];
+    
+    int iAccx=0;
+    int iAccy=0;
+    int iAccz=0;
+    
+    int iGirox=0;
+    int iGiroy=0;
+    int iGiroz=0;
 
-LSM303 compass;
-L3G gyro;
+    LSM303 compass;
+    L3G gyro;
 
 void setup() {
+  delay(10000);
   Serial.begin(9600);
   Wire.begin();
 
@@ -48,26 +69,30 @@ void setup() {
     Serial.println("Não se comunicou com a acelerometro");
     while (1);
   }
-
-
 }
 
 void loop() {
   Serial.print("G ");
   Serial.print("X: ");
-  Serial.print(GiroX());
+  mGiroX(mGirox,iGirox);
+  Serial.print(mGirox[MEDIA]);
   Serial.print(" Y: ");
-  Serial.print(GiroY());
+  mGiroY(mGiroy,iGiroy);
+  Serial.print(mGiroy[MEDIA]);
   Serial.print(" Z: ");
-  Serial.print(GiroZ());
+  mGiroZ(mGiroz,iGiroz);
+  Serial.print(mGiroz[MEDIA]);
 
   Serial.print(" A ");
   Serial.print("X: ");
-  Serial.print(AccX());
+  mAccX(mAccx,iAccx);
+  Serial.print(mAccx[MEDIA]);
   Serial.print(" Y: ");
-  Serial.print(AccY());
+  mAccY(mAccy,iAccy);
+  Serial.print(mAccy[MEDIA]);
   Serial.print(" Z: ");
-  Serial.println(AccZ());
+  mAccZ(mAccz,iAccz);
+  Serial.println(mAccz[MEDIA]);
 
   delay(100);
 }
@@ -114,38 +139,128 @@ float GiroZ(){
   return((float)gyro.g.z/DIV_GIRO);
 }
 
-float mAccX()
+void mAccX(float *media,int &i){
+  if(i<=MEDIA){
+    media[i]=AccX();
+    i++;
+  }
+  else{
+    i=0;
+    media[i]=AccX();
+  }
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++){
+    media[MEDIA]+=media[j];
+  }
+
+  media[MEDIA]=media[MEDIA]/MEDIA;
+}
+
+void mAccY(float *media,int &i){
+  if(i<=MEDIA){
+    media[i]=AccY();
+    i++;
+  }
+  else{
+    i=0;
+    media[i]=AccY();
+  }
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++){
+    media[MEDIA]+=media[j];
+  }
+
+  media[MEDIA]=media[MEDIA]/MEDIA;
+}
+
+void mAccZ(float *media,int &i)
 {
-  static float media[MEDIA+1];
-  static float i=0;
   if(i<=MEDIA)
   {
-    media[i]=AccX();
+    media[i]=AccZ();
     i++;
   }
   else
   {
     i=0;
-    media[i]=AccX();
+    media[i]=AccZ();
   }
+  
 
-  for(int j=0, j<=MEDIA, j++)
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++)
   {
-    media[MEDIA+1]+=media[j];
+    media[MEDIA]+=media[j];
   }
-  return(media[MEDIA+1]/MEDIA);
+  
+  media[MEDIA]=media[MEDIA]/MEDIA;
 }
 
-/*float mAccY(){
-  compass.enableDefault();
-  compass.read();
+void mGiroX(float *media,int &i)
+{
+  if(i<=MEDIA)
+  {
+    media[i]=GiroX();
+    i++;
+  }
+  else
+  {
+    i=0;
+    media[i]=GiroX();
+  }
+  
 
-  return((float)compass.a.y/DIV_ACC);
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++)
+  {
+    media[MEDIA]+=media[j];
+  }
+  
+  media[MEDIA]=media[MEDIA]/MEDIA;
 }
 
-float mAccZ(){
-  compass.enableDefault();
-  compass.read();
+void mGiroY(float *media,int &i)
+{
+  if(i<=MEDIA)
+  {
+    media[i]=GiroY();
+    i++;
+  }
+  else
+  {
+    i=0;
+    media[i]=GiroY();
+  }
+  
 
-  return((float)compass.a.z/DIV_ACC);
-}*/
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++)
+  {
+    media[MEDIA]+=media[j];
+  }
+  
+  media[MEDIA]=media[MEDIA]/MEDIA;
+}
+
+void mGiroZ(float *media,int &i)
+{
+  if(i<=MEDIA)
+  {
+    media[i]=GiroZ();
+    i++;
+  }
+  else
+  {
+    i=0;
+    media[i]=GiroZ();
+  }
+  
+
+  media[MEDIA]=0;
+  for(int j=0; j<=MEDIA-1; j++)
+  {
+    media[MEDIA]+=media[j];
+  }
+  
+  media[MEDIA]=media[MEDIA]/MEDIA;
+}

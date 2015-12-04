@@ -1,7 +1,13 @@
 String ard_sends;
 
 const int Saida1=6;
-const int time=50;
+
+//const int time=0.1; //16M
+//const float passo=0.1; //16M
+const int time=20; //16k
+const float passo=0.1; //16k
+//const int time=85; //8k
+//const float passo=0.05; //16k
 
 float pwm;
 float timeup;
@@ -11,7 +17,7 @@ char c;
 void setup() {
   Serial.begin(9600); 
   pinMode(Saida1, OUTPUT);
-  pwm=0;
+  pwm=0.8;
   timeup=pwm*time;
   timedown=(1-pwm)*time;
 }
@@ -28,11 +34,11 @@ void loop() {
     c = Serial.read();
     if(c=='w')
     {
-      pwm = pwm+0.02;
+      pwm = pwm+passo;
     }
     if(c=='s')
     {
-      pwm =pwm - 0.02;
+      pwm =pwm - passo;
     }
     if(c=='p')
     {

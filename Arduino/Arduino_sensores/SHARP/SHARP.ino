@@ -1,7 +1,7 @@
-#define SHARP_FRENTE A0
-#define SHARP_TRAZ A1
-#define SHARP_ESQUERDA A2
-#define SHARP_DIREITA A3
+#define SHARP_FRENTE 9
+#define SHARP_TRAZ 8
+#define SHARP_ESQUERDA 7
+#define SHARP_DIREITA 6
 
 void setup() {
   Serial.begin(9600);
@@ -21,5 +21,5 @@ void loop() {
   Serial.println(analogRead(SHARP_ESQUERDA));
   Serial.print("Sharp Direita: ");
   Serial.println(analogRead(SHARP_DIREITA));
-  delay(1000);
+  delay(500);
 }
