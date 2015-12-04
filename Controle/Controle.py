@@ -454,10 +454,10 @@ class Controle(Thread):
 
         def motorParado(Potencia, cor_x, cor_y, cor_giro_z):
             if Potencia>=self.MIN_PWM:
-                self.motores['Dif PWM']['Motor 1'] += -cor_x +cor_y +cor_giro_z
-                self.motores['Dif PWM']['Motor 2'] += +cor_x +cor_y -cor_giro_z
-                self.motores['Dif PWM']['Motor 3'] += -cor_x -cor_y +cor_giro_z
-                self.motores['Dif PWM']['Motor 4'] += +cor_x -cor_y -cor_giro_z
+                self.motores['Dif PWM']['Motor 1'] += +cor_x -cor_y +cor_giro_z
+                self.motores['Dif PWM']['Motor 2'] += -cor_x +cor_y -cor_giro_z
+                self.motores['Dif PWM']['Motor 3'] += +cor_x -cor_y +cor_giro_z
+                self.motores['Dif PWM']['Motor 4'] += -cor_x +cor_y -cor_giro_z
                 print(self.motores)
                 #print(-cor_x +cor_y -cor_giro_z)
                 offset_motores=np.matrix([
