@@ -47,9 +47,6 @@ class Comm(Thread):
 	offsetMotores_old = numpy.matrix([[0],[0],[0],[0]]) 	# Offset dos motores 	
 	potMotores_old = numpy.matrix([[0],[0],[0],[0]]) 		# Potencia dos motores
  	
-	def __init__ (self):
-		initComm();
-
 	def initComm(self):
 		dest = (self.HOST, self.PORT)
 		tcp.connect(dest)
@@ -110,17 +107,18 @@ class Comm(Thread):
 		return True
 
 #------------------------------ Main Loop -------------------------------------#
-	def run(self):
-		while exe==RODANDO:
-			if hasBeenUpdated():
-				paramMsg = "[INICIO]"
-				paramMsg.append("\t\tMotor1: ")
-				paramMsg.append(potMotores[0,0])
-				paramMsg.append("\t\tMotor2: ")
-				paramMsg.append(potMotores[1,0])
-				paramMsg.append("\t\tMotor3: ")
-				paramMsg.append(potMotores[2,0])
-				paramMsg.append("\t\tMotor4: ")
-				paramMsg.append(potMotores[3,0])
-				paramMsg.append("[FIM]")
-				tcp.send(paramMsg)	
+	while exe==RODANDO:
+		if not connected:
+			initComm()
+		if hasBeenUpdated():
+			paramMsg = "[INICIO]"
+			paramMsg.append("\t\tMotor1: ")
+			paramMsg.append(potMotores[0,0])
+			paramMsg.append("\t\tMotor2: ")
+			paramMsg.append(potMotores[1,0])
+			paramMsg.append("\t\tMotor3: ")
+			paramMsg.append(potMotores[2,0])
+			paramMsg.append("\t\tMotor4: ")
+			paramMsg.append(potMotores[3,0])
+			paramMsg.append("[FIM]")
+			tcp.send(paramMsg)	
