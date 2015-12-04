@@ -8,6 +8,7 @@ from threading import Thread
 #RODANDO = 1
 
 class Comm():
+	print ("inicio da classe")
 	#Variaveis da classe
 	exe = 0
 	HOST = '192.168.0.102'               	# Endereco IP do Servidor
@@ -48,11 +49,13 @@ class Comm():
 	potMotores_old = numpy.matrix([[0],[0],[0],[0]]) 		# Potencia dos motores
 
 	def initComm(self):
+		print ("initComm")
 		dest = (self.HOST, self.PORT)
 		self.tcp.connect(dest)
 		connected = True
  	
 	def __init__ (self):
+		print ("__init__")
 		self.initComm();
 	
 #--------------------------- Controle interno ---------------------------------#
@@ -103,6 +106,7 @@ class Comm():
 		self.offsetMotores = auxOffsetMotores
 
 	def set_PotMotores(self, auxPotMotores):
+		print ("set_PotMotores")
 		self.potMotores = auxPotMotores
 
 #---------------------------- Funcoes internas --------------------------------#
@@ -111,8 +115,11 @@ class Comm():
 
 #------------------------------ Main Loop -------------------------------------#
 	def run(self):
-		while self.exe == 0:
+		print ("run")
+		while self.exe == 1:
+			print ("exe")
 			if self.hasBeenUpdated():
+				print ("updated")
 				paramMsg = "[INICIO]"
 				paramMsg.append("\n\tMotor1: ")
 				paramMsg.append(self.potMotores[0,0])
@@ -140,4 +147,6 @@ class Comm():
 				paramMsg.append(self.offsetMotores)
 				paramMsg.append("[FIM]")
 				self.tcp.send(paramMsg)
+				print ("sent")
 		self.tcp.close()
+		print ("closed")
