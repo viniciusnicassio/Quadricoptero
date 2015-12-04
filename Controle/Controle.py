@@ -169,6 +169,9 @@ class Controle(Thread):
         
     def get_Motor4(self):
         return self.antigo_motor_4
+        
+    def get_Motores(self):
+        return np.matrix([[self.antigo_motor_1],[self.antigo_motor_2],[self.antigo_motor_3],[self.antigo_motor_4]])
 #-----------------------------------------------------------------------------------------------------------------------------------------------
     #Referencia
     r_x=0
@@ -198,7 +201,10 @@ class Controle(Thread):
         return self.motores['Dif PWM']['Motor 3']
     
     def get_offset_Motor_4(self):
-        return self.motores['Dif PWM']['Motor 4']        
+        return self.motores['Dif PWM']['Motor 4']
+        
+    def get_offset_Motores(self):
+        return self.motores
     
 #-----------------------------------------------------------------------------------------------------------------------------------------------
     #defines
@@ -257,6 +263,18 @@ class Controle(Thread):
         self.printf("Qual das portas ACM abixo esta ativada ?")
         os.system("ls /dev/ttyACM*")
         self.ard = serial.Serial( '/dev/ttyACM'+raw_input("A porta ACM"), 9600, timeout=5) # Iniciando comunicacao com arduino
+        
+        #Refenciando
+        raw_input("Coloque o drone na posicao de referencia e precione ENTER")
+        self.ard.flush()
+        self.ard.write("z") # Envinado arduino
+        while (self.ard.inWaiting()==0):
+            pass
+        antigo=0
+        while (self.ard.inWaiting()>antigo):
+            antigo=self.ard.inWaiting()
+            time.sleep(0.0050)
+        serialArdFloat = float(self.ard.read(self.ard.inWaiting()))
         
         os.system("clear")
         self.printf("\033[1;34mLendo arquivos de offset\033[0m")
@@ -391,8 +409,8 @@ class Controle(Thread):
                 antigo=ard.inWaiting()
                 time.sleep(0.0050)
             serialArdFloat = float(ard.read(ard.inWaiting()))
-            varA = '%.0f' %serialArdFloat
-            return float(varA) # gravando resposta
+            varA = float(serialArdFloat) - (float(serialArdFloat) - int(serialArdFloat))
+            return int(varA) # gravando resposta
 #---------------------------------------------------------------------------------------------------------------------------------------------            
         # Funcoes dos motores
         def motorMovimento(Potencia, cor_x, cor_y, cor_giro_z):
@@ -436,10 +454,12 @@ class Controle(Thread):
 
         def motorParado(Potencia, cor_x, cor_y, cor_giro_z):
             if Potencia>=self.MIN_PWM:
-                self.motores['Dif PWM']['Motor 1'] += -cor_x +cor_y -cor_giro_z
-                self.motores['Dif PWM']['Motor 2'] += +cor_x +cor_y +cor_giro_z
-                self.motores['Dif PWM']['Motor 3'] += +cor_x -cor_y -cor_giro_z
-                self.motores['Dif PWM']['Motor 4'] += -cor_x -cor_y +cor_giro_z
+                self.motores['Dif PWM']['Motor 1'] += -cor_x +cor_y +cor_giro_z
+                self.motores['Dif PWM']['Motor 2'] += +cor_x +cor_y -cor_giro_z
+                self.motores['Dif PWM']['Motor 3'] += -cor_x -cor_y +cor_giro_z
+                self.motores['Dif PWM']['Motor 4'] += +cor_x -cor_y -cor_giro_z
+                print(self.motores)
+                #print(-cor_x +cor_y -cor_giro_z)
                 offset_motores=np.matrix([
                 [self.motores['Dif PWM']['Motor 1']],
                 [self.motores['Dif PWM']['Motor 2']],
@@ -474,7 +494,7 @@ class Controle(Thread):
             return(Potencia_motores)
 #---------------------------------------------------------------------------------------------------------------------------------------------
         def correcao(erro, somaErro, d_erro, kp, ki, kd):
-            return kp*erro + somaErro*ki + d_erro*kd
+            return int(kp*erro + somaErro*ki + d_erro*kd)
 #---------------------------------------------------------------------------------------------------------------------------------------------                
         # Inicio programa
         self.exe=1
@@ -484,6 +504,7 @@ class Controle(Thread):
             # Acelerometro
             self.ax = lerSensores("ax",self.ard) # Lendo valor x do acc
             self.ay = lerSensores("ay",self.ard) # Lendo valor y do acc
+            #print(self.ay)
             self.az = lerSensores("az",self.ard) # Lendo valor z do acc
             
             # Giroscopio

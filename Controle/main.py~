@@ -71,6 +71,8 @@ while threads[1].check():
     threads[0].set_Potencia(threads[1].get_Potencia())
     
     threads[2].set_PotMotores(threads[0].get_Motores())
+
+#    tcp.send("[INICIO]\033[1;34mCalibracao\033[0m\n\n\033[0;32mPotencia atual: "+str(threads[1].get_Potencia())+"\033[0m \t\tMotor 1: "+str(threads[0].get_Motor1())+"\t\tMotor 2: "+str(threads[0].get_Motor2())+"\t\t\tAcc X: "+str(threads[0].get_AccX())+"\t\tAcc Y: "+str(threads[0].get_AccY())+"\t\tGiroscopio Z: "+str(threads[0].get_GiroZ())+"\n\033[0;32mKp atual: "+str(threads[1].get_kp())+"\033[0m\n\033[0;32mKi atual: "+str(threads[1].get_ki())+"\033[0m	\t\t\t\tMotor 3: "+str(threads[0].get_Motor3())+"\t\tMotor 4: "+str(threads[0].get_Motor4())+"\n\033[0;32mKd atual: "+str(threads[1].get_kd())+"\033[0m\n\nw -->\tSubir\ns -->\tDescer\nd -->\tDesligar\np -->\tParar\no -->\tAjustar passo, passo atual: 1\nk -->\tAjustar ganhos\nb -->\tSair\n\nDigite a funcao desejada: [FIM]")
     
 #Finalizando controle
 threads[0].set_Potencia(500)
