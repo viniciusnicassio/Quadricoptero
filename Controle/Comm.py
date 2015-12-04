@@ -4,15 +4,16 @@ import time
 import numpy
 from threading import Thread
 
-PARADO = 0
-RODANDO = 1
+#PARADO = 0
+#RODANDO = 1
 
 class Comm(Thread):
 	#Variaveis da classe
-	exe = PARADO
+	exe = 0
 	HOST = '192.168.0.102'               	# Endereco IP do Servidor
 	PORT = 5000                         	# Porta que o Servidor esta
 	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	connected = False
 
 	#Variaveis de sensoriamento
 	accelX = 0 			# Eixo x do acelerometro
@@ -110,17 +111,19 @@ class Comm(Thread):
 
 #------------------------------ Main Loop -------------------------------------#
 	def run(self):
-		while self.exe == self.RODANDO:
+		while self.exe == 1:
 			if self.hasBeenUpdated():
 				paramMsg = "[INICIO]"
-				paramMsg.append("\t\tMotor1: ")
+				paramMsg.append("\n\tMotor1: ")
 				paramMsg.append(self.potMotores[0,0])
-				paramMsg.append("\t\tMotor2: ")
+				paramMsg.append("\n\tMotor2: ")
 				paramMsg.append(self.potMotores[1,0])
-				paramMsg.append("\t\tMotor3: ")
+				paramMsg.append("\n\tMotor3: ")
 				paramMsg.append(self.potMotores[2,0])
-				paramMsg.append("\t\tMotor4: ")
+				paramMsg.append("\n\tMotor4: ")
 				paramMsg.append(self.potMotores[3,0])
+				paramMsg.append("\n\tAccelX: ")
+				paramMsg.append(self.accelX)
 				paramMsg.append("[FIM]")
 				self.tcp.send(paramMsg)
 		self.tcp.close()
